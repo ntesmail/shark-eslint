@@ -13,4 +13,4 @@ Deploy ESLint for your project
     ```
     git config --global core.autocrlf input
     ```
-1.
+1. coming soon
