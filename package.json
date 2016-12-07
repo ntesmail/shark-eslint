@@ -1,0 +1,14 @@
+{
+    "name": "shark-eslint",
+    "bin": {
+        "shark-eslint": "./bin/shark-eslint.js"
+    },
+    "version": "0.0.1",
+    "description": "deploy eslint for your project",
+    "main": "./bin/shark-eslint",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Zubin Gao",
+    "license": "ISC"
+}
