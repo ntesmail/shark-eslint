@@ -3,7 +3,7 @@
     "bin": {
         "shark-eslint": "./bin/shark-eslint.js"
     },
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "deploy eslint for your project",
     "main": "./bin/shark-eslint",
     "scripts": {
