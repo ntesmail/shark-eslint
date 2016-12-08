@@ -1,9 +1,9 @@
 {
-    "name": "shark-eslint",
+    "name": "@ntesmail/shark-eslint",
     "bin": {
         "shark-eslint": "./bin/shark-eslint.js"
     },
-    "version": "0.0.4",
+    "version": "1.0.0",
     "description": "deploy eslint for your project",
     "main": "./bin/shark-eslint",
     "scripts": {
