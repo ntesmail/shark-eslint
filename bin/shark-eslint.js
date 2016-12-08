@@ -18,7 +18,7 @@ copyFile(path.join(confFilesPath, '.editorconfig'), path.join(targetProjectPath,
 copyFile(path.join(confFilesPath, '.eslintrc.json'), path.join(targetProjectPath, '.eslintrc.json'))
 copyFile(path.join(confFilesPath, '.eslintignore'), path.join(targetProjectPath, '.eslintignore'))
 
-fs.writeFileSync(path.join(targetProjectPath, 'package.json'), JSON.stringify(targetPackage))
+fs.writeFileSync(path.join(targetProjectPath, 'package.json'), JSON.stringify(targetPackage, null, 4))
 
 const addPreCommit = exec('npm run postinstall -s', (err, stdout, stderr) => {
     if(err) throw err
