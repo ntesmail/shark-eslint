@@ -12,11 +12,15 @@ const fs = require('fs'),
 
 function copyFile(src, dist, cb) {
     // fs.createReadStream(src).pipe(fs.createWriteStream(dist))
-    const writeStream = fs.createWriteStream(src)
-    writeStream.on('finish', () => {
-        cb && cb()
+    return new Promise((resolve, reject) => {
+        const writeStream = fs.createWriteStream(dist)
+        writeStream.on('finish', () => {
+            cb && cb()
+            resolve()
+        })
+        fs.createReadStream(src).pipe(writeStream)
     })
-    fs.createReadStream(src).pipe(writeStream)
+
 }
 
 function log(msg) {
@@ -24,25 +28,42 @@ function log(msg) {
 }
 
 if (fs.existsSync('shark-eslint-configs')) {
-    rimraf.sync('shark-eslint-configs')
+    rimraf('shark-eslint-configs', () => {
+        doStart()
+    })
+}
+else {
+    doStart()
 }
 
-exec('git clone git@git.mail.netease.com:support/shark-eslint-configs.git', (err, stdout, stderr) => {
-    if (err) throw err
-    const confFilesPath = path.resolve(targetProjectPath, 'shark-eslint-configs')
-    const npmScript = require(path.join(confFilesPath, 'package.script'))
-    targetPackage.scripts = targetPackage.scripts.constructor === Object ? Object.assign(targetPackage.scripts, npmScript) : npmScript
+function doStart() {
 
-    copyFile(path.join(confFilesPath, '.editorconfig'), path.join(targetProjectPath, '.editorconfig'), log('.editorconfig 写入成功'))
-    copyFile(path.join(confFilesPath, `.eslintrc${argv.t ? `-${argv.t}` : ''}.json`), path.join(targetProjectPath, '.eslintrc.json'), log('.eslintrc.json 写入成功'))
-    copyFile(path.join(confFilesPath, '.eslintignore'), path.join(targetProjectPath, '.eslintignore'), log('.eslintignore 写入成功'))
-
-    fs.writeFile(path.join(targetProjectPath, 'package.json'), JSON.stringify(targetPackage, null, 4), log('npm scripts 写入成功'))
-
-    const addPreCommit = exec('npm run postinstall -s', (err, stdout, stderr) => {
+    exec('git clone git@git.mail.netease.com:support/shark-eslint-configs.git', (err, stdout, stderr) => {
         if (err) throw err
-        console.log('git pre commit 钩子写入成功')
+        const confFilesPath = path.resolve(targetProjectPath, 'shark-eslint-configs')
+        const npmScript = require(path.join(confFilesPath, 'package.script'))
+        targetPackage.scripts = targetPackage.scripts.constructor === Object ? Object.assign(targetPackage.scripts, npmScript) : npmScript
+
+        Promise.all([
+            copyFile(path.join(confFilesPath, '.editorconfig'), path.join(targetProjectPath, '.editorconfig'), log('.editorconfig 写入成功')),
+            copyFile(path.join(confFilesPath, `.eslintrc${argv.t ? `-${argv.t}` : ''}.json`), path.join(targetProjectPath, '.eslintrc.json'), log('.eslintrc.json 写入成功')),
+            copyFile(path.join(confFilesPath, '.eslintignore'), path.join(targetProjectPath, '.eslintignore'), log('.eslintignore 写入成功')),
+            new Promise((resolve, reject) => {
+                fs.writeFile(path.join(targetProjectPath, 'package.json'), JSON.stringify(targetPackage, null, 4), (err) => {
+                    if (err) throw err
+                    log('npm scripts 写入成功')()
+                    const addPreCommit = exec('npm run postinstall -s', (err, stdout, stderr) => {
+                        if (err) throw err
+                        console.log('git pre commit 钩子写入成功')
+                        resolve()
+                    })
+                })
+            })
+        ]).then(() => {
+            rimraf('shark-eslint-configs', err => {
+                console.log('自动部署完成')
+            })
+        })
     })
 
-    rimraf.sync('shark-eslint-configs')
-})
+}
