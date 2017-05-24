@@ -47,11 +47,12 @@ function doStart() {
             copyFile(path.join(confFilesPath, '.editorconfig'), path.join(targetProjectPath, '.editorconfig'), log('.editorconfig 写入成功')),
             copyFile(path.join(confFilesPath, `.eslintrc${argv.t ? `-${argv.t}` : ''}.json`), path.join(targetProjectPath, '.eslintrc.json'), log('.eslintrc.json 写入成功')),
             copyFile(path.join(confFilesPath, '.eslintignore'), path.join(targetProjectPath, '.eslintignore'), log('.eslintignore 写入成功')),
+            copyFile(path.join(confFilesPath, 'pre-commit'), path.join(targetProjectPath, 'pre-commit'), log('pre-commit 写入成功')),
             new Promise((resolve, reject) => {
                 fs.writeFile(path.join(targetProjectPath, 'package.json'), JSON.stringify(targetPackage, null, 4), (err) => {
                     if (err) throw err
                     log('npm scripts 写入成功')()
-                    const addPreCommit = exec('npm run postinstall -s', (err, stdout, stderr) => {
+                    const addPreCommit = exec('npm run cp-pre-commit -s', (err, stdout, stderr) => {
                         if (err) throw err
                         console.log('git pre commit 钩子写入成功')
                         resolve()
