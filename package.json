@@ -12,6 +12,7 @@
     "author": "Zubin Gao",
     "license": "ISC",
     "dependencies": {
+        "rimraf": "^2.6.1",
         "yargs": "^8.0.1"
     }
 }
