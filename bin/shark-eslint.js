@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const fs = require('fs'),
-    rimraf = require('rimraf'),
     path = require('path'),
     argv = require('yargs').argv,
     exec = require('child_process').exec,
@@ -28,7 +27,7 @@ function log(msg) {
 }
 
 if (fs.existsSync('shark-eslint-configs')) {
-    rimraf('shark-eslint-configs', () => {
+    exec('rm -fr shark-eslint-configs', () => {
         doStart()
     })
 }
@@ -60,7 +59,7 @@ function doStart() {
                 })
             })
         ]).then(() => {
-            rimraf('shark-eslint-configs', err => {
+            exec('rm -fr shark-eslint-configs', () => {
                 console.log('自动部署完成')
             })
         })
