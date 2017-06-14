@@ -37,7 +37,7 @@ else {
 
 function doStart() {
 
-    exec('git clone git@git.mail.netease.com:support/shark-eslint-configs.git', (err, stdout, stderr) => {
+    exec('git clone https://github.com/ntesmail/shark-eslint-configs.git, (err, stdout, stderr) => {
         if (err) throw err
         const confFilesPath = path.resolve(targetProjectPath, 'shark-eslint-configs')
         const npmScript = require(path.join(confFilesPath, 'package.script'))
