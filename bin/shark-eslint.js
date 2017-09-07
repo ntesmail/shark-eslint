@@ -4,7 +4,7 @@ const fs = require('fs'),
     path = require('path'),
     argv = require('yargs').argv,
     exec = require('child_process').exec,
-    targetProjectPath = process.env.PWD,
+    targetProjectPath = process.cwd(),
     // confFilesPath = path.resolve(__dirname, '../configDocs'),
 
     targetPackage = require(path.join(targetProjectPath, 'package.json'))
@@ -37,7 +37,7 @@ else {
 
 function doStart() {
 
-    exec('git clone https://github.com/ntesmail/shark-eslint-configs.git, (err, stdout, stderr) => {
+    exec('git clone https://github.com/ntesmail/shark-eslint-configs.git', (err, stdout, stderr) => {
         if (err) throw err
         const confFilesPath = path.resolve(targetProjectPath, 'shark-eslint-configs')
         const npmScript = require(path.join(confFilesPath, 'package.script'))
